@@ -3,7 +3,7 @@ package com.mashibing;
 import com.mashibing.tank.MyTank;
 
 /**
- * 第一天坦克大战
+ * 坦克大战
  *
  * @author huoguangyao
  * @date 2019-5-18 15:02:46
