@@ -1,5 +1,7 @@
 package com.mashibing.tank;
 
+import com.mashibing.TankFrame;
+
 import java.awt.*;
 
 /**
@@ -17,9 +19,11 @@ public class Tank {
 
     private static final int SPEED = 10;
 
-    private boolean isMoving;
+    private boolean moving;
 
     private Dir dir;
+
+    private TankFrame tf;
 
     /**
      * 初始化坦克的信息
@@ -28,10 +32,11 @@ public class Tank {
      * @param y   位置y
      * @param dir 方向，炮筒朝向。子弹的方向和坦克的方向保持一致。
      */
-    public Tank(int x, int y, Dir dir) {
+    public Tank(int x, int y, Dir dir, TankFrame tf) {
         this.x = x;
         this.y = y;
         this.dir = dir;
+        this.tf = tf;
     }
 
     public void paint(Graphics graphics) {
@@ -40,7 +45,7 @@ public class Tank {
 
         graphics.fillRect(x, y, WIDTH, HEIGHT);
 
-        if (!isMoving) {
+        if (!moving) {
             return;
         } else {
             move();
@@ -72,18 +77,11 @@ public class Tank {
     }
 
     public void setMoving(boolean moving) {
-        isMoving = moving;
+        this.moving = moving;
     }
 
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public Dir getDir() {
-        return dir;
+    public void fire() {
+        // 开炮了！ 开始new 子弹 先吃饭去
+        tf.getBulletList().add(new Bullet(this.x, this.y, this.dir, this.tf));
     }
 }

@@ -9,6 +9,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * 这个类就是一个大画布。
@@ -21,9 +24,12 @@ public class TankFrame extends Frame {
     private static final int FRAME_WIDTH = 800;
     private static final int FRAME_HEIGHT = 600;
 
-    private static Tank tank = new Tank(200, 200, Dir.DOWN);
+    private Tank tank = new Tank(200, 200, Dir.DOWN, this);
 
-    private Bullet b;
+    /**
+     * 这有个坑，awt包也有一个List 不要导错了
+     */
+    private List<Bullet> bulletList = new ArrayList<>();
 
     TankFrame() {
         setVisible(true);
@@ -38,7 +44,7 @@ public class TankFrame extends Frame {
         });
 
 
-//        监听按键，上下左右，记录状态
+        // 监听按键，上下左右，记录状态
         addKeyListener(new KeyAdapter() {
             private boolean left, right, up, down;
 
@@ -68,7 +74,7 @@ public class TankFrame extends Frame {
                 switch (e.getKeyCode()) {
                     // 按下Ctrl开炮
                     case KeyEvent.VK_CONTROL:
-                        b = new Bullet(tank.getX(), tank.getY(), tank.getDir());
+                        tank.fire();
                         break;
                     case KeyEvent.VK_RIGHT:
                         right = true;
@@ -135,10 +141,25 @@ public class TankFrame extends Frame {
 
     @Override
     public void paint(Graphics g) {
+        g.setColor(Color.WHITE);
+        g.drawString("子弹的个数" + bulletList.size(), 10, 60);
         // 画出主站坦克, 他自己画。 面向对象
         tank.paint(g);
-        if (b != null) {
-            b.paint(g);
+//        循环把子弹画出来
+        Iterator<Bullet> itr = bulletList.iterator();
+//          增强for循环 是用的迭代器。 这有个著名的 迭代器删除问题
+        while (itr.hasNext()) {
+            Bullet next = itr.next();
+            if (!next.isLive()) {
+                itr.remove();
+            } else {
+                next.paint(g);
+            }
         }
     }
+
+    public List<Bullet> getBulletList() {
+        return bulletList;
+    }
 }
+
