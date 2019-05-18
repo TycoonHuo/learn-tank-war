@@ -13,9 +13,11 @@ public class Tank {
     private int y;
 
     private static final int WIDTH = 50;
-    private static final int HEIFHT = 50;
+    private static final int HEIGHT = 50;
 
     private static final int SPEED = 10;
+
+    private boolean isMoving;
 
     private Dir dir;
 
@@ -36,30 +38,52 @@ public class Tank {
         Color c = graphics.getColor();
         graphics.setColor(Color.CYAN);
 
-        switch (dir) {
-            case DOWN:
-                this.y += 10;
-                break;
-            case UP:
-                this.y -= 10;
-                break;
-            case LEFT:
-                this.x -= 10;
-                break;
-            case RIGHT:
-                this.x += 10;
-            default:
-                break;
+        graphics.fillRect(x, y, WIDTH, HEIGHT);
+
+        if (!isMoving) {
+            return;
+        } else {
+            move();
         }
-
-
-        graphics.fillRect(x, y, WIDTH, HEIFHT);
-
         // 把画笔的颜色还原回去，不要污染画笔
         graphics.setColor(c);
     }
 
+    private void move() {
+        switch (dir) {
+            case DOWN:
+                this.y += SPEED;
+                break;
+            case UP:
+                this.y -= SPEED;
+                break;
+            case LEFT:
+                this.x -= SPEED;
+                break;
+            case RIGHT:
+                this.x += SPEED;
+            default:
+                break;
+        }
+    }
+
     public void setDir(Dir dir) {
         this.dir = dir;
+    }
+
+    public void setMoving(boolean moving) {
+        isMoving = moving;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public Dir getDir() {
+        return dir;
     }
 }
