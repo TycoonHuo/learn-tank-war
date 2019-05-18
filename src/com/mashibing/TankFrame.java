@@ -1,4 +1,7 @@
-package com.mashibing.tank;
+package com.mashibing;
+
+import com.mashibing.tank.Dir;
+import com.mashibing.tank.Tank;
 
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -7,17 +10,22 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 /**
+ * 这个类就是一个大画布。
+ * 里面的坦克和子弹 都面向对象 new出来
  * 继承Frame 我理解这里的目的是为了调用paint 使用那根画笔
+ *
+ * @author huoguangyao
  */
-public class MyTank extends Frame {
-    private int x = 200;
-    private int y = 200;
+public class TankFrame extends Frame {
+    private static final int FRAME_WIDTH = 800;
+    private static final int FRAME_HEIFHT = 600;
 
-    private static final int SPEED = 10;
+    private static Tank tank = new Tank(200, 200, Dir.DOWN);
 
-    public MyTank() {
+
+    TankFrame() {
         setVisible(true);
-        setSize(800, 600);
+        setSize(FRAME_WIDTH, FRAME_HEIFHT);
         setResizable(false);
         addWindowListener(new WindowAdapter() {
             // 监听关闭窗口的事件 让系统退出
@@ -27,22 +35,27 @@ public class MyTank extends Frame {
             }
         });
 
-        // 监听按键，上下左右，记录状态
+
+//        监听按键，上下左右，记录状态
         addKeyListener(new KeyAdapter() {
             private boolean left, right, up, down;
 
-            private void move() {
+            // 根据按键的状态改变坦克的方向。
+            private void setTankDir() {
+//                if(!left && !right && !up && !down){
+//
+//                }
                 if (left) {
-                    x -= SPEED;
+                    tank.setDir(Dir.LEFT);
                 }
                 if (up) {
-                    y -= SPEED;
+                    tank.setDir(Dir.UP);
                 }
                 if (down) {
-                    y += SPEED;
+                    tank.setDir(Dir.DOWN);
                 }
                 if (right) {
-                    x += SPEED;
+                    tank.setDir(Dir.RIGHT);
                 }
             }
 
@@ -64,7 +77,7 @@ public class MyTank extends Frame {
                     default:
                         break;
                 }
-                move();
+                setTankDir();
             }
 
             @Override
@@ -85,13 +98,34 @@ public class MyTank extends Frame {
                     default:
                         break;
                 }
-//                move();
+                setTankDir();
             }
         });
     }
 
+    /**
+     * 双缓冲代码 解决闪烁
+     */
+    private Image offScreenImage = null;
+
+    @Override
+    public void update(Graphics g) {
+        if (offScreenImage == null) {
+            offScreenImage = this.createImage(FRAME_WIDTH, FRAME_HEIFHT);
+        }
+        Graphics gOffScreen = offScreenImage.getGraphics();
+        Color c = gOffScreen.getColor();
+        gOffScreen.setColor(Color.BLACK);
+        gOffScreen.fillRect(0, 0, FRAME_WIDTH, FRAME_HEIFHT);
+        gOffScreen.setColor(c);
+        paint(gOffScreen);
+        g.drawImage(offScreenImage, 0, 0, null);
+    }
+
+
     @Override
     public void paint(Graphics g) {
-        g.fillRect(x, y, 50, 50);
+        // 画出主站坦克, 他自己画。 面向对象
+        tank.paint(g);
     }
 }

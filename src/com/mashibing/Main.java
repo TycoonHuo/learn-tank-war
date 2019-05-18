@@ -1,6 +1,5 @@
 package com.mashibing;
 
-import com.mashibing.tank.MyTank;
 
 /**
  * 坦克大战
@@ -11,7 +10,7 @@ import com.mashibing.tank.MyTank;
 public class Main {
 
     public static void main(String[] args) {
-        MyTank tank = new MyTank();
+        TankFrame tank = new TankFrame();
         while (true) {
             try {
                 Thread.sleep(50);
